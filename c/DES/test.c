@@ -21,5 +21,22 @@ int main() {
     permutation_layer(perm_test_3);
     assert(memcmp(perm_test_3, perm_result_3, BLOCK_SIZE) == 0);
 
+    // Inverse Permutation Layer
+    uint8_t inv_perm_test_1[BLOCK_SIZE] = {0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80};
+    const uint8_t inv_perm_result_1[BLOCK_SIZE] = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xff};
+    inverse_permutation_layer(inv_perm_test_1);
+    assert(memcmp(inv_perm_test_1, inv_perm_result_1, BLOCK_SIZE) == 0);
+
+    uint8_t inv_perm_test_2[BLOCK_SIZE] = {0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40};
+    const uint8_t inv_perm_result_2[BLOCK_SIZE] = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xff, 0x0};
+    inverse_permutation_layer(inv_perm_test_2);
+    assert(memcmp(inv_perm_test_2, inv_perm_result_2, BLOCK_SIZE) == 0);
+
+    uint8_t inv_perm_test_3[BLOCK_SIZE] = {0x81, 0x81, 0x81, 0x81, 0x81, 0x81, 0x81, 0x81};
+    const uint8_t inv_perm_result_3[BLOCK_SIZE] = {0xff, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xff};
+    inverse_permutation_layer(inv_perm_test_3);
+    assert(memcmp(inv_perm_test_3, inv_perm_result_3, BLOCK_SIZE) == 0);
+
+
     return 0;
 }
