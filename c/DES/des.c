@@ -20,13 +20,14 @@ const uint8_t IP_inverse[] = {
 };
 
 
-void permutation_layer(uint8_t* block) {
+
+void initial_permutation(uint8_t* block) {
     uint8_t temp_block[BLOCK_SIZE] = {0};
 
-    for (int i = 0; i < 8; i++) {
+    for (int i = 0; i < BLOCK_SIZE; i++) {
         uint8_t bit_offset = H[i];
 
-        for (int j = 7; j >= 0; j--)
+        for (int j = BLOCK_SIZE - 1; j >= 0; j--)
             temp_block[i] |= ((block[j] >> bit_offset) & 0x1) << j;
     }
 
@@ -36,7 +37,7 @@ void permutation_layer(uint8_t* block) {
 // second implementation with two nested for-loops
 
 
-void inverse_permutation_layer(uint8_t* block) {
+void inverse_initial_permutation(uint8_t* block) {
     uint8_t temp_block[BLOCK_SIZE] = {0};
 
     // perform the permutation
