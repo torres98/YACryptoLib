@@ -1,0 +1,25 @@
+#include <assert.h>
+#include <stdio.h>
+
+#include "des.c"
+
+
+int main() {
+    // Permutation Layer
+    uint8_t perm_test_1[BLOCK_SIZE] = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xff};
+    const uint8_t perm_result_1[BLOCK_SIZE] = {0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80};
+    permutation_layer(perm_test_1);
+    assert(memcmp(perm_test_1, perm_result_1, BLOCK_SIZE) == 0);
+
+    uint8_t perm_test_2[BLOCK_SIZE] = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xff, 0x0};
+    const uint8_t perm_result_2[BLOCK_SIZE] = {0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40};
+    permutation_layer(perm_test_2);
+    assert(memcmp(perm_test_2, perm_result_2, BLOCK_SIZE) == 0);
+
+    uint8_t perm_test_3[BLOCK_SIZE] = {0xff, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xff};
+    const uint8_t perm_result_3[BLOCK_SIZE] = {0x81, 0x81, 0x81, 0x81, 0x81, 0x81, 0x81, 0x81};
+    permutation_layer(perm_test_3);
+    assert(memcmp(perm_test_3, perm_result_3, BLOCK_SIZE) == 0);
+
+    return 0;
+}
