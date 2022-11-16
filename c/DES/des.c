@@ -37,3 +37,22 @@ void permutation_layer(uint8_t* block) {
 }
 
 // second implementation with two nested for-loops
+
+
+void inverse_permutation_layer(uint8_t* block) {
+    uint8_t temp_block[BLOCK_SIZE] = {0};
+
+    // perform the permutation
+    // tip: the byte index starts at the 8th byte and then goes back to the 1st
+    for (int i = 0; i < 64; i++) {
+        uint8_t byte_index = IP_inverse[i] >> 3; // divide that by 8
+        uint8_t byte_offset = 0x7 ^ (IP_inverse[i] & 0x7); // mod by 8
+
+        temp_block[i >> 3] |= ((block[byte_index] >> byte_offset) & 0x1) << (0x7 ^ (i & 0x7));
+    }
+    // tip: pre-compute those indices
+
+    // 000 => 111
+    // 010 => 101
+    memcpy(block, temp_block, BLOCK_SIZE);
+}
