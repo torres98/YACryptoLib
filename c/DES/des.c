@@ -3,10 +3,10 @@
 #include <string.h>
 
 #include "include/des.h"
+#include "constants.h"
 
 #define BLOCK_SIZE 8
 
-const int H[] = {6, 4, 2, 0, 7, 5, 3, 1};
 
 const uint8_t IP_inverse[] = {
     39, 7, 47, 15, 55, 23, 63, 31,
