@@ -34,7 +34,22 @@ void initial_permutation(uint8_t* block) {
     memcpy(block, temp_block, BLOCK_SIZE);
 }
 
-// second implementation with two nested for-loops
+void expansion(uint8_t* right_block, uint8_t* out_block) {
+    int input_bit_position = 31;
+
+    for (int i = 0; i < BLOCK_SIZE; i++) {
+        for (int j = 5; j >= 0; j--) {
+            int byte_index = input_bit_position >> 3;
+            int bit_offset = 0x7 ^ (input_bit_position & 0x7);
+
+            out_block[i] |= ((right_block[byte_index] >> bit_offset) & 0x1) << j;
+            input_bit_position = (input_bit_position + 1) & 0x1f;
+        }
+
+        input_bit_position -= 2;
+    }
+}
+
 
 
 void inverse_initial_permutation(uint8_t* block) {
