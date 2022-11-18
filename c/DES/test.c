@@ -26,19 +26,19 @@ int main() {
     uint8_t exp_result[BLOCK_SIZE];
 
     uint8_t exp_input_1[] = {0x0, 0x0, 0x0, 0xff};
-    const uint8_t exp_expected_result_1[] = {0x20, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1f, 0x3e};
+    const uint8_t exp_expected_result_1[] = {0x20, 0x0, 0x0, 0x0, 0x0, 0x1, 0x1f, 0x3e};
     expansion(exp_input_1, exp_result);
-    assert(memcmp(exp_result, exp_expected_result_1, BLOCK_SIZE / 2) == 0);
+    assert(memcmp(exp_result, exp_expected_result_1, BLOCK_SIZE) == 0);
 
     uint8_t exp_input_2[] = {0xff, 0x0, 0x0, 0x0};
     const uint8_t exp_expected_result_2[] = {0x1f, 0x3e, 0x20, 0x0, 0x0, 0x0, 0x0, 0x1};
     expansion(exp_input_2, exp_result);
-    assert(memcmp(exp_result, exp_expected_result_2, BLOCK_SIZE / 2) == 0);
+    assert(memcmp(exp_result, exp_expected_result_2, BLOCK_SIZE) == 0);
 
     uint8_t exp_input_3[] = {0xff, 0xff, 0xff, 0xff};
     const uint8_t exp_result_3[] = {0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f};
     expansion(exp_input_3, exp_result);
-    assert(memcmp(exp_result, exp_result_3, BLOCK_SIZE / 2) == 0);
+    assert(memcmp(exp_result, exp_result_3, BLOCK_SIZE) == 0);
 
     
     // Substitution Layer
