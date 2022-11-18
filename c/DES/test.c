@@ -6,40 +6,40 @@
 
 int main() {
     // Initial Permutation Layer
-    uint8_t init_perm_test_1[] = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xff};
-    const uint8_t init_perm_result_1[] = {0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80};
-    initial_permutation(init_perm_test_1);
-    assert(memcmp(init_perm_test_1, init_perm_result_1, BLOCK_SIZE) == 0);
+    uint8_t initperm_input_1[] = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xff};
+    const uint8_t initperm_expected_result_1[] = {0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80};
+    initial_permutation(initperm_input_1);
+    assert(memcmp(initperm_input_1, initperm_expected_result_1, BLOCK_SIZE) == 0);
 
-    uint8_t init_perm_test_2[] = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xff, 0x0};
-    const uint8_t init_perm_result_2[] = {0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40};
-    initial_permutation(init_perm_test_2);
-    assert(memcmp(init_perm_test_2, init_perm_result_2, BLOCK_SIZE) == 0);
+    uint8_t initperm_input_2[] = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xff, 0x0};
+    const uint8_t initperm_expected_result_2[] = {0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40, 0x40};
+    initial_permutation(initperm_input_2);
+    assert(memcmp(initperm_input_2, initperm_expected_result_2, BLOCK_SIZE) == 0);
 
-    uint8_t init_perm_test_3[] = {0xff, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xff};
-    const uint8_t init_perm_result_3[] = {0x81, 0x81, 0x81, 0x81, 0x81, 0x81, 0x81, 0x81};
-    initial_permutation(init_perm_test_3);
-    assert(memcmp(init_perm_test_3, init_perm_result_3, BLOCK_SIZE) == 0);
+    uint8_t initperm_input_3[] = {0xff, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xff};
+    const uint8_t initperm_expected_result_3[] = {0x81, 0x81, 0x81, 0x81, 0x81, 0x81, 0x81, 0x81};
+    initial_permutation(initperm_input_3);
+    assert(memcmp(initperm_input_3, initperm_expected_result_3, BLOCK_SIZE) == 0);
 
 
-    // Expansion layer
-    uint8_t exp_test_1[] = {0x0, 0x0, 0x0, 0xff};
-    const uint8_t exp_result_1[] = {0x20, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1f, 0x3e};
-    uint8_t result_1[BLOCK_SIZE] = {0};
-    expansion(exp_test_1, result_1);
-    assert(memcmp(result_1, exp_result_1, BLOCK_SIZE / 2) == 0);
+    // Expansion Layer
+    uint8_t exp_result[BLOCK_SIZE];
 
-    uint8_t exp_test_2[] = {0xff, 0x0, 0x0, 0x0};
-    const uint8_t exp_result_2[] = {0x1f, 0x3e, 0x20, 0x0, 0x0, 0x0, 0x0, 0x1};
-    uint8_t result_2[BLOCK_SIZE] = {0};
-    expansion(exp_test_2, result_2);
-    assert(memcmp(result_2, exp_result_2, BLOCK_SIZE / 2) == 0);
+    uint8_t exp_input_1[] = {0x0, 0x0, 0x0, 0xff};
+    const uint8_t exp_expected_result_1[] = {0x20, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1f, 0x3e};
+    expansion(exp_input_1, exp_result);
+    assert(memcmp(exp_result, exp_expected_result_1, BLOCK_SIZE / 2) == 0);
 
-    uint8_t exp_test_3[] = {0xff, 0xff, 0xff, 0xff};
+    uint8_t exp_input_2[] = {0xff, 0x0, 0x0, 0x0};
+    const uint8_t exp_expected_result_2[] = {0x1f, 0x3e, 0x20, 0x0, 0x0, 0x0, 0x0, 0x1};
+    expansion(exp_input_2, exp_result);
+    assert(memcmp(exp_result, exp_expected_result_2, BLOCK_SIZE / 2) == 0);
+
+    uint8_t exp_input_3[] = {0xff, 0xff, 0xff, 0xff};
     const uint8_t exp_result_3[] = {0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f};
-    uint8_t result_3[BLOCK_SIZE] = {0};
-    expansion(exp_test_3, result_3);
-    assert(memcmp(result_3, exp_result_3, BLOCK_SIZE / 2) == 0);
+    expansion(exp_input_3, exp_result);
+    assert(memcmp(exp_result, exp_result_3, BLOCK_SIZE / 2) == 0);
+
 
 
     // Inverse Initial Permutation Layer
