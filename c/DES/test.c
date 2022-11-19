@@ -42,17 +42,17 @@ int main() {
 
     
     // Substitution Layer
-    uint8_t sub_result[8];
-
-    const uint8_t sub_input_1[] = {0x18, 0x11, 0x1e, 0x3a, 0x21, 0x26, 0x14, 0x27};
+    uint8_t sub_input_1[] = {0x18, 0x11, 0x1e, 0x3a, 0x21, 0x26, 0x14, 0x27};
     uint8_t sub_expected_result_1[] = {0x5, 0xc, 0x8, 0x2, 0xb, 0x5, 0x9, 0x7};
-    substitution_layer(sub_input_1, sub_result);
-    assert(memcmp(sub_result, sub_expected_result_1, BLOCK_SIZE) == 0);
+    substitution_layer(sub_input_1);
+    assert(memcmp(sub_input_1, sub_expected_result_1, BLOCK_SIZE) == 0);
 
-    const uint8_t sub_input_2[] = {0x20, 0x32, 0x37, 0x1e, 0x1c, 0x0, 0x1, 0x1a};
+    uint8_t sub_input_2[] = {0x20, 0x32, 0x37, 0x1e, 0x1c, 0x0, 0x1, 0x1a};
     uint8_t sub_expected_result_2[] = {0x4, 0x8, 0x3, 0xf, 0xe, 0xc, 0xd, 0x0};
-    substitution_layer(sub_input_2, sub_result);
-    assert(memcmp(sub_result, sub_expected_result_2, BLOCK_SIZE) == 0);
+    substitution_layer(sub_input_2);
+    assert(memcmp(sub_input_2, sub_expected_result_2, BLOCK_SIZE) == 0);
+
+
 
 
     // Inverse Initial Permutation Layer

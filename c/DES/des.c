@@ -53,10 +53,14 @@ void expansion(uint8_t* right_block, uint8_t* out_block) {
     }
 }
 
-void substitution_layer(const uint8_t* input_block, uint8_t* out_block) {
+void substitution_layer(uint8_t* block) {
     for (int i = 0; i < 8; i++) {
-        int row_index = ((input_block[i] & 0x20) >> 4) | (input_block[i] & 0x1);
-        int column_index = (input_block[i] & 0x1e) >> 1;
+        int row_index = ((block[i] & 0x20) >> 4) | (block[i] & 0x1);
+        int column_index = (block[i] & 0x1e) >> 1;
+
+        block[i] = S[i][row_index][column_index];
+    }
+}
 
         out_block[i] = S[i][row_index][column_index];
     }
