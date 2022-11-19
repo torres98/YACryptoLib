@@ -65,6 +65,18 @@ int main() {
     assert(memcmp(perm_input_2, perm_expected_result_2, BLOCK_SIZE) == 0);
 
     
+    // Cipher Function Layer
+    uint8_t f_input_1[] = {0xf0, 0xaa, 0xf0, 0xaa};
+    const uint8_t f_key_1[] = {0x6, 0x30, 0xb, 0x2f, 0x3f, 0x7, 0x1, 0x32};
+    const uint8_t f_expected_result_1[] = {0x23, 0x4a, 0xa9, 0xbb};
+    cipher_function(f_input_1, f_key_1);
+    assert(memcmp(f_input_1, f_expected_result_1, BLOCK_SIZE / 2) == 0);
+
+    uint8_t f_input_2[] = {0x0, 0x7e, 0x80, 0xd};
+    const uint8_t f_key_2[] = {0x0, 0x32, 0x38, 0x23, 0xc, 0x0, 0x0, 0x0};
+    const uint8_t f_expected_result_2[] = {0x97, 0x5c, 0x90, 0xcd};
+    cipher_function(f_input_2, f_key_2);
+    assert(memcmp(f_input_2, f_expected_result_2, BLOCK_SIZE / 2) == 0);
 
 
     // Inverse Initial Permutation Layer

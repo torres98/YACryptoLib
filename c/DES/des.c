@@ -75,6 +75,23 @@ void permutation_layer(uint8_t* block) {
     memcpy(block, temp_block, BLOCK_SIZE);
 }
 
+void cipher_function(uint8_t* right_block, const uint8_t* round_key) {
+    uint8_t temp_block[BLOCK_SIZE] = {0};
+
+    expansion(right_block, temp_block);
+
+    // XOR with round key
+    for (int i = 0; i < 8; i++)
+        temp_block[i] ^= round_key[i];
+
+    substitution_layer(temp_block);
+    permutation_layer(temp_block);
+
+    // dump the result in the right_block array
+    for (int i = 0; i < 4; i++)
+        right_block[i] = (temp_block[2*i] << 4) | temp_block[2*i+1];
+}
+
 void inverse_initial_permutation(uint8_t* block) {
     uint8_t temp_block[BLOCK_SIZE] = {0};
 
