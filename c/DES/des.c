@@ -8,16 +8,24 @@
 #define BLOCK_SIZE 8
 
 
-const uint8_t IP_inverse[] = {
-    39, 7, 47, 15, 55, 23, 63, 31,
-    38, 6, 46, 14, 54, 22, 62, 30,
-    37, 5, 45, 13, 53, 21, 61, 29,
-    36, 4, 44, 12, 52, 20, 60, 28,
-    35, 3, 43, 11, 51, 19, 59, 27,
-    34, 2, 42, 10, 50, 18, 58, 26,
-    33, 1, 41, 9, 49, 17, 57, 25,
-    32, 0, 40, 8, 48, 16, 56, 24
-};
+// Key-related operations
+
+void permute_key(const uint8_t* key, uint8_t* out_key) {
+    int table_index = 0;
+
+    for (int i = 0; i < BLOCK_SIZE; i++) {
+        uint8_t output_byte = 0;
+
+        for (int j = 6; j >= 0; j--) {
+            uint8_t byte_index = PC1[table_index] >> 3;
+            uint8_t bit_offset = 0x7 ^ (PC1[table_index++] & 0x7);
+
+            output_byte |= ((key[byte_index] >> bit_offset) & 0x1) << j;
+        }
+
+        out_key[i] = output_byte;
+    }
+}
 
 
 
