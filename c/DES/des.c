@@ -27,6 +27,71 @@ void permute_key(const uint8_t* key, uint8_t* out_key) {
     }
 }
 
+void rotate_state(uint8_t* state, unsigned nround) {
+    uint8_t carry_over = 0;
+
+    if (nround == 1 || nround == 2 || nround == 9 || nround == 16) {
+        for (int i = 3; i >= 0; i--) {
+            state[i] = (state[i] << 1) | carry_over;
+            carry_over = state[i] >> 7;
+
+            state[i] &= 0x7f;
+        }
+        
+        state[3] |= carry_over;
+
+        carry_over = 0;
+
+        for (int i = 7; i >= 4; i--) {
+            state[i] = (state[i] << 1) | carry_over;
+            carry_over = state[i] >> 7;
+
+            state[i] &= 0x7f;
+        }
+
+        state[7] |= carry_over;
+
+    } else {
+        for (int i = 3; i >= 0; i--) {
+            uint8_t carry_over_temp = (state[i] >> 5) & 0x3;
+            state[i] = (state[i] << 2) | carry_over;
+            carry_over = carry_over_temp;
+
+            state[i] &= 0x7f;
+        }
+        
+        state[3] |= carry_over;
+
+        carry_over = 0;
+
+        for (int i = 7; i >= 4; i--) {
+            uint8_t carry_over_temp = (state[i] >> 5) & 0x3;
+            state[i] = (state[i] << 2) | carry_over;
+            carry_over = carry_over_temp;
+
+            state[i] &= 0x7f;
+        }
+
+        state[7] |= carry_over;
+    }
+}
+
+void get_round_key(const uint8_t *state, uint8_t *round_key_buffer) {
+    int table_index = 0;
+
+    for (int i = 0; i < BLOCK_SIZE; i++) {
+        uint8_t round_key_byte = 0;
+
+        for (int j = 5; j >= 0; j--) {
+            uint8_t byte_index = PC2[table_index] / 7;
+            uint8_t bit_offset = 6 - (PC2[table_index++] % 7);
+
+            round_key_byte |= ((state[byte_index] >> bit_offset) & 0x1) << j;
+        }
+
+        round_key_buffer[i] = round_key_byte;
+    }
+}
 
 
 void initial_permutation(uint8_t* block) {
