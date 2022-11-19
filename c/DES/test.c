@@ -53,6 +53,18 @@ int main() {
     assert(memcmp(sub_input_2, sub_expected_result_2, BLOCK_SIZE) == 0);
 
 
+    // Permutation Layer
+    uint8_t perm_input_1[] = {0x5, 0xc, 0x8, 0x2, 0xb, 0x5, 0x9, 0x7};
+    const uint8_t perm_expected_result_1[] = {0x2, 0x3, 0x4, 0xa, 0xa, 0x9, 0xb, 0xb};
+    permutation_layer(perm_input_1);
+    assert(memcmp(perm_input_1, perm_expected_result_1, BLOCK_SIZE) == 0);
+
+    uint8_t perm_input_2[] = {0x4, 0x8, 0x3, 0xf, 0xe, 0xc, 0xd, 0x0};
+    const uint8_t perm_expected_result_2[] = {0x9, 0x7, 0x5, 0xc, 0x9, 0x0, 0xc, 0xd};
+    permutation_layer(perm_input_2);
+    assert(memcmp(perm_input_2, perm_expected_result_2, BLOCK_SIZE) == 0);
+
+    
 
 
     // Inverse Initial Permutation Layer
