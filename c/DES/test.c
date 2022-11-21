@@ -21,21 +21,21 @@ int main() {
     
     const uint8_t rotstate_expected_output_1[] = {0x70, 0x66, 0x2a, 0x5f, 0x55, 0x33, 0x1e, 0x1e};
     const uint8_t rk_expected_output_1[] = {0x6, 0x30, 0xb, 0x2f, 0x3f, 0x7, 0x1, 0x32};
-    rotate_state(state_input, 1);
+    rotate_key_state(state_input, 1);
     get_round_key(state_input, round_key);
     assert(memcmp(state_input, rotstate_expected_output_1, BLOCK_SIZE) == 0);
     assert(memcmp(round_key, rk_expected_output_1, BLOCK_SIZE) == 0);
 
     const uint8_t rotstate_expected_output_2[] = {0x61, 0x4c, 0x55, 0x3f, 0x2a, 0x66, 0x3c, 0x3d};
     const uint8_t rk_expected_output_2[] = {0x1e, 0x1a, 0x3b, 0x19, 0x36, 0x3c, 0x27, 0x25};
-    rotate_state(state_input, 2);
+    rotate_key_state(state_input, 2);
     get_round_key(state_input, round_key);
     assert(memcmp(state_input, rotstate_expected_output_2, BLOCK_SIZE) == 0);
     assert(memcmp(round_key, rk_expected_output_2, BLOCK_SIZE) == 0);
 
     const uint8_t rotstate_expected_output_3[] = {0x6, 0x32, 0x55, 0x7f, 0x2b, 0x19, 0x71, 0x75};
     const uint8_t rk_expected_output_3[] = {0x15, 0x1f, 0x32, 0xa, 0x10, 0x2c, 0x3e, 0x19};
-    rotate_state(state_input, 3);
+    rotate_key_state(state_input, 3);
     get_round_key(state_input, round_key);
     assert(memcmp(state_input, rotstate_expected_output_3, BLOCK_SIZE) == 0);
     assert(memcmp(round_key, rk_expected_output_3, BLOCK_SIZE) == 0);

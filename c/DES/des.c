@@ -10,7 +10,7 @@
 
 // Key-related operations
 
-void permute_key(const uint8_t* key, uint8_t* out_key) {
+void permute_key(const uint8_t* key, uint8_t* key_state) {
     int table_index = 0;
 
     for (int i = 0; i < BLOCK_SIZE; i++) {
@@ -23,60 +23,60 @@ void permute_key(const uint8_t* key, uint8_t* out_key) {
             output_byte |= ((key[byte_index] >> bit_offset) & 0x1) << j;
         }
 
-        out_key[i] = output_byte;
+        key_state[i] = output_byte;
     }
 }
 
-void rotate_state(uint8_t* state, unsigned nround) {
+void rotate_key_state(uint8_t* key_state, unsigned nround) {
     uint8_t carry_over = 0;
 
     if (nround == 1 || nround == 2 || nround == 9 || nround == 16) {
         for (int i = 3; i >= 0; i--) {
-            state[i] = (state[i] << 1) | carry_over;
-            carry_over = state[i] >> 7;
+            key_state[i] = (key_state[i] << 1) | carry_over;
+            carry_over = key_state[i] >> 7;
 
-            state[i] &= 0x7f;
+            key_state[i] &= 0x7f;
         }
         
-        state[3] |= carry_over;
+        key_state[3] |= carry_over;
 
         carry_over = 0;
 
         for (int i = 7; i >= 4; i--) {
-            state[i] = (state[i] << 1) | carry_over;
-            carry_over = state[i] >> 7;
+            key_state[i] = (key_state[i] << 1) | carry_over;
+            carry_over = key_state[i] >> 7;
 
-            state[i] &= 0x7f;
+            key_state[i] &= 0x7f;
         }
 
-        state[7] |= carry_over;
+        key_state[7] |= carry_over;
 
     } else {
         for (int i = 3; i >= 0; i--) {
-            uint8_t carry_over_temp = (state[i] >> 5) & 0x3;
-            state[i] = (state[i] << 2) | carry_over;
+            uint8_t carry_over_temp = (key_state[i] >> 5) & 0x3;
+            key_state[i] = (key_state[i] << 2) | carry_over;
             carry_over = carry_over_temp;
 
-            state[i] &= 0x7f;
+            key_state[i] &= 0x7f;
         }
         
-        state[3] |= carry_over;
+        key_state[3] |= carry_over;
 
         carry_over = 0;
 
         for (int i = 7; i >= 4; i--) {
-            uint8_t carry_over_temp = (state[i] >> 5) & 0x3;
-            state[i] = (state[i] << 2) | carry_over;
+            uint8_t carry_over_temp = (key_state[i] >> 5) & 0x3;
+            key_state[i] = (key_state[i] << 2) | carry_over;
             carry_over = carry_over_temp;
 
-            state[i] &= 0x7f;
+            key_state[i] &= 0x7f;
         }
 
-        state[7] |= carry_over;
+        key_state[7] |= carry_over;
     }
 }
 
-void get_round_key(const uint8_t *state, uint8_t *round_key_buffer) {
+void get_round_key(const uint8_t *key_state, uint8_t *round_key) {
     int table_index = 0;
 
     for (int i = 0; i < BLOCK_SIZE; i++) {
@@ -86,13 +86,14 @@ void get_round_key(const uint8_t *state, uint8_t *round_key_buffer) {
             uint8_t byte_index = PC2[table_index] / 7;
             uint8_t bit_offset = 6 - (PC2[table_index++] % 7);
 
-            round_key_byte |= ((state[byte_index] >> bit_offset) & 0x1) << j;
+            round_key_byte |= ((key_state[byte_index] >> bit_offset) & 0x1) << j;
         }
 
-        round_key_buffer[i] = round_key_byte;
+        round_key[i] = round_key_byte;
     }
 }
 
+// Encrypt operations
 
 void initial_permutation(uint8_t* block) {
     uint8_t temp_block[BLOCK_SIZE] = {0};
@@ -107,7 +108,7 @@ void initial_permutation(uint8_t* block) {
     memcpy(block, temp_block, BLOCK_SIZE);
 }
 
-void expansion(uint8_t* right_block, uint8_t* out_block) {
+void expansion(const uint8_t* half_block, uint8_t* out_block) {
     int input_bit_position = 31;
 
     for (int i = 0; i < BLOCK_SIZE; i++) {
@@ -117,7 +118,7 @@ void expansion(uint8_t* right_block, uint8_t* out_block) {
             int byte_index = input_bit_position >> 3;
             int bit_offset = 0x7 ^ (input_bit_position & 0x7);
 
-            output_byte |= ((right_block[byte_index] >> bit_offset) & 0x1) << j;
+            output_byte |= ((half_block[byte_index] >> bit_offset) & 0x1) << j;
             input_bit_position = (input_bit_position + 1) & 0x1f;
         }
 
@@ -149,7 +150,7 @@ void permutation_layer(uint8_t* block) {
 }
 
 void cipher_function(uint8_t* right_block, const uint8_t* round_key) {
-    uint8_t temp_block[BLOCK_SIZE] = {0};
+    uint8_t temp_block[BLOCK_SIZE];
 
     expansion(right_block, temp_block);
 
