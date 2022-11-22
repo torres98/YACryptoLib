@@ -34,8 +34,6 @@ void rotate_key_state(uint8_t* key_state, unsigned nround) {
         for (int i = 3; i >= 0; i--) {
             key_state[i] = (key_state[i] << 1) | carry_over;
             carry_over = key_state[i] >> 7;
-
-            key_state[i] &= 0x7f;
         }
         
         key_state[3] |= carry_over;
@@ -45,8 +43,6 @@ void rotate_key_state(uint8_t* key_state, unsigned nround) {
         for (int i = 7; i >= 4; i--) {
             key_state[i] = (key_state[i] << 1) | carry_over;
             carry_over = key_state[i] >> 7;
-
-            key_state[i] &= 0x7f;
         }
 
         key_state[7] |= carry_over;
@@ -56,8 +52,6 @@ void rotate_key_state(uint8_t* key_state, unsigned nround) {
             uint8_t carry_over_temp = (key_state[i] >> 5) & 0x3;
             key_state[i] = (key_state[i] << 2) | carry_over;
             carry_over = carry_over_temp;
-
-            key_state[i] &= 0x7f;
         }
         
         key_state[3] |= carry_over;
@@ -68,8 +62,6 @@ void rotate_key_state(uint8_t* key_state, unsigned nround) {
             uint8_t carry_over_temp = (key_state[i] >> 5) & 0x3;
             key_state[i] = (key_state[i] << 2) | carry_over;
             carry_over = carry_over_temp;
-
-            key_state[i] &= 0x7f;
         }
 
         key_state[7] |= carry_over;

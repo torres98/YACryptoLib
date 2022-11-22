@@ -23,6 +23,7 @@ int main() {
     const uint8_t rk_expected_output_1[] = {0x6, 0x30, 0xb, 0x2f, 0x3f, 0x7, 0x1, 0x32};
     rotate_key_state(state_input, 1);
     get_round_key(state_input, round_key);
+    for (int i = 0; i < BLOCK_SIZE; i++) state_input[i] &= 0x7f;
     assert(memcmp(state_input, rotstate_expected_output_1, BLOCK_SIZE) == 0);
     assert(memcmp(round_key, rk_expected_output_1, BLOCK_SIZE) == 0);
 
@@ -30,6 +31,7 @@ int main() {
     const uint8_t rk_expected_output_2[] = {0x1e, 0x1a, 0x3b, 0x19, 0x36, 0x3c, 0x27, 0x25};
     rotate_key_state(state_input, 2);
     get_round_key(state_input, round_key);
+    for (int i = 0; i < BLOCK_SIZE; i++) state_input[i] &= 0x7f;
     assert(memcmp(state_input, rotstate_expected_output_2, BLOCK_SIZE) == 0);
     assert(memcmp(round_key, rk_expected_output_2, BLOCK_SIZE) == 0);
 
@@ -37,6 +39,7 @@ int main() {
     const uint8_t rk_expected_output_3[] = {0x15, 0x1f, 0x32, 0xa, 0x10, 0x2c, 0x3e, 0x19};
     rotate_key_state(state_input, 3);
     get_round_key(state_input, round_key);
+    for (int i = 0; i < BLOCK_SIZE; i++) state_input[i] &= 0x7f;
     assert(memcmp(state_input, rotstate_expected_output_3, BLOCK_SIZE) == 0);
     assert(memcmp(round_key, rk_expected_output_3, BLOCK_SIZE) == 0);
 
