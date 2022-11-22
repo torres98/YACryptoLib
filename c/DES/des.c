@@ -137,13 +137,21 @@ void substitution_layer(uint8_t* block) {
 }
 
 void permutation_layer(uint8_t* block) {
-    uint8_t temp_block[BLOCK_SIZE] = {0};
+    uint8_t temp_block[BLOCK_SIZE];
 
-    for (int i = 0; i < 32; i++) {
-        uint8_t byte_index = P[i] >> 2;
-        uint8_t byte_offset = 0x3 ^ (P[i] & 0x3);
+    int table_index = 0;
 
-        temp_block[i >> 2] |= ((block[byte_index] >> byte_offset) & 0x1) << (0x3 ^ (i & 0x3));
+    for (int i = 0; i < 8; i++) {
+        uint8_t output_byte = 0;
+
+        for (int j = 3; j >= 0; j--) {
+            int byte_index = P[table_index] >> 2;
+            int bit_offset = 0x3 ^ (P[table_index++] & 0x3);
+
+            output_byte |= ((block[byte_index] >> bit_offset) & 0x1) << j;
+        }
+
+        temp_block[i] = output_byte;
     }
 
     memcpy(block, temp_block, BLOCK_SIZE);
