@@ -96,13 +96,16 @@ void get_round_key(const uint8_t *key_state, uint8_t *round_key) {
 // Encrypt operations
 
 void initial_permutation(uint8_t* block) {
-    uint8_t temp_block[BLOCK_SIZE] = {0};
+    uint8_t temp_block[BLOCK_SIZE];
 
     for (int i = 0; i < BLOCK_SIZE; i++) {
-        uint8_t bit_offset = H[i];
+        int bit_offset = H[i];
+        uint8_t output_byte = 0;
 
         for (int j = BLOCK_SIZE - 1; j >= 0; j--)
-            temp_block[i] |= ((block[j] >> bit_offset) & 0x1) << j;
+            output_byte |= ((block[j] >> bit_offset) & 0x1) << j;
+
+        temp_block[i] = output_byte;
     }
 
     memcpy(block, temp_block, BLOCK_SIZE);
