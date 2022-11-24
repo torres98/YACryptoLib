@@ -6,6 +6,7 @@
 #include "constants.h"
 
 #define BLOCK_SIZE 8
+#define HALF_BLOCK_SIZE 4
 
 
 // Key-related operations
@@ -27,7 +28,7 @@ void permute_key(const uint8_t* key, uint8_t* key_state) {
     }
 }
 
-void rotate_key_state(uint8_t* key_state, unsigned nround) {
+void left_rotate_key_state(uint8_t* key_state, unsigned nround) {
     int lrot_amount, carry_over_shift, carry_over_mask;
 
     if (nround == 1 || nround == 2 || nround == 9 || nround == 16) {
@@ -42,23 +43,23 @@ void rotate_key_state(uint8_t* key_state, unsigned nround) {
 
     uint8_t carry_over = 0;
     
-    for (int i = 3; i >= 0; i--) {
+    for (int i = HALF_BLOCK_SIZE - 1; i >= 0; i--) {
         uint8_t carry_over_temp = (key_state[i] >> carry_over_shift) & carry_over_mask;
         key_state[i] = (key_state[i] << lrot_amount) | carry_over;
         carry_over = carry_over_temp;
     }
     
-    key_state[3] |= carry_over;
+    key_state[HALF_BLOCK_SIZE - 1] |= carry_over;
 
     carry_over = 0;
 
-    for (int i = 7; i >= 4; i--) {
+    for (int i = BLOCK_SIZE - 1; i >= HALF_BLOCK_SIZE; i--) {
         uint8_t carry_over_temp = (key_state[i] >> carry_over_shift) & carry_over_mask;
         key_state[i] = (key_state[i] << lrot_amount) | carry_over;
         carry_over = carry_over_temp;
     }
 
-    key_state[7] |= carry_over;
+    key_state[BLOCK_SIZE - 1] |= carry_over;
 }
 
 void get_round_key(const uint8_t *key_state, uint8_t *round_key) {
