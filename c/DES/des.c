@@ -8,6 +8,7 @@
 #define BLOCK_SIZE 8
 #define HALF_BLOCK_SIZE 4
 
+#define NROUNDS 16
 
 // Key-related operations
 
@@ -185,4 +186,39 @@ void inverse_initial_permutation(uint8_t* block) {
     }
 
     memcpy(block, temp_block, BLOCK_SIZE);
+}
+
+void encrypt_block(const uint8_t* plaintext_block, const uint8_t* key, uint8_t* ciphertext_block_buffer) {
+    uint8_t* block = ciphertext_block_buffer;
+    memcpy(block, plaintext_block, BLOCK_SIZE);
+
+    uint8_t key_state[BLOCK_SIZE];
+    permute_key(key, key_state);
+
+    initial_permutation(block);
+
+    uint8_t temp_half_block[HALF_BLOCK_SIZE];
+
+    for (int r = 1; r <= NROUNDS; r++) {
+        uint8_t round_key[BLOCK_SIZE];
+        memcpy(temp_half_block, block + HALF_BLOCK_SIZE, HALF_BLOCK_SIZE);
+
+        left_rotate_key_state(key_state, r);
+        get_round_key(key_state, round_key);
+
+        cipher_function(block + HALF_BLOCK_SIZE, round_key);
+        
+        // XOR with left block
+        for (int i = 0; i < HALF_BLOCK_SIZE; i++)
+            block[HALF_BLOCK_SIZE + i] ^= block[i];
+        
+        // Copy the right block to the left
+        memcpy(block, temp_half_block, HALF_BLOCK_SIZE);
+    }
+
+    memcpy(temp_half_block, block + HALF_BLOCK_SIZE, HALF_BLOCK_SIZE);
+    memcpy(block + HALF_BLOCK_SIZE, block, HALF_BLOCK_SIZE);
+    memcpy(block, temp_half_block, HALF_BLOCK_SIZE);
+
+    inverse_initial_permutation(block);
 }

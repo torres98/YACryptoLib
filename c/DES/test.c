@@ -135,5 +135,21 @@ int main() {
     assert(memcmp(inv_perm_test_3, inv_perm_result_3, BLOCK_SIZE) == 0);
 
 
+    // Block Encryption
+    uint8_t encrypt_result[BLOCK_SIZE];
+
+    const uint8_t encrypt_input_1[BLOCK_SIZE] = {0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef};
+    const uint8_t encrypt_key_1[BLOCK_SIZE] = {0x13, 0x34, 0x57, 0x79, 0x9b, 0xbc, 0xdf, 0xf1};
+    const uint8_t encrypt_expected_result_1[BLOCK_SIZE] = {0x85, 0xe8, 0x13, 0x54, 0x0f, 0x0a, 0xb4, 0x05};
+    encrypt_block(encrypt_input_1, encrypt_key_1, encrypt_result);
+    assert(memcmp(encrypt_result, encrypt_expected_result_1, BLOCK_SIZE) == 0);
+
+    const uint8_t encrypt_input_2[BLOCK_SIZE] = {0x95, 0xf8, 0xa5, 0xe5, 0xdd, 0x31, 0xd9, 0x0};
+    const uint8_t encrypt_key_2[BLOCK_SIZE] = {0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1};
+    const uint8_t encrypt_expected_result_2[BLOCK_SIZE] = {0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0};
+    encrypt_block(encrypt_input_2, encrypt_key_2, encrypt_result);
+    assert(memcmp(encrypt_result, encrypt_expected_result_2, BLOCK_SIZE) == 0);
+
+
     return 0;
 }
