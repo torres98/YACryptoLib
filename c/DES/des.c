@@ -63,6 +63,40 @@ void left_rotate_key_state(uint8_t* key_state, unsigned nround) {
     key_state[BLOCK_SIZE - 1] |= carry_over;
 }
 
+void right_rotate_key_state(uint8_t* key_state, unsigned nround) {
+    int rrot_amount, carry_over_shift, carry_over_mask;
+
+    if (nround == 1 || nround == 8 || nround == 15 || nround == 16) {
+        rrot_amount = 1;
+        carry_over_shift = 6;
+        carry_over_mask = 0x1;
+    } else {
+        rrot_amount = 2;
+        carry_over_shift = 5;
+        carry_over_mask = 0x3;
+    }
+
+    uint8_t carry_over = 0;
+    
+    for (int i = 0; i < HALF_BLOCK_SIZE; i++) {
+        uint8_t carry_over_temp = key_state[i] & carry_over_mask;
+        key_state[i] = (carry_over << carry_over_shift) | (key_state[i] >> rrot_amount);
+        carry_over = carry_over_temp;
+    }
+    
+    key_state[0] |= (carry_over << carry_over_shift);
+
+    carry_over = 0;
+
+    for (int i = HALF_BLOCK_SIZE; i < BLOCK_SIZE; i++) {
+        uint8_t carry_over_temp = key_state[i] & carry_over_mask;
+        key_state[i] = (carry_over << carry_over_shift) | (key_state[i] >> rrot_amount);
+        carry_over = carry_over_temp;
+    }
+
+    key_state[4] |= (carry_over << carry_over_shift);
+}
+
 void get_round_key(const uint8_t *key_state, uint8_t *round_key) {
     int table_index = 0;
 
@@ -205,6 +239,41 @@ void encrypt_block(const uint8_t* plaintext_block, const uint8_t* key, uint8_t* 
 
         left_rotate_key_state(key_state, r);
         get_round_key(key_state, round_key);
+
+        cipher_function(block + HALF_BLOCK_SIZE, round_key);
+        
+        // XOR with left block
+        for (int i = 0; i < HALF_BLOCK_SIZE; i++)
+            block[HALF_BLOCK_SIZE + i] ^= block[i];
+        
+        // Copy the right block to the left
+        memcpy(block, temp_half_block, HALF_BLOCK_SIZE);
+    }
+
+    memcpy(temp_half_block, block + HALF_BLOCK_SIZE, HALF_BLOCK_SIZE);
+    memcpy(block + HALF_BLOCK_SIZE, block, HALF_BLOCK_SIZE);
+    memcpy(block, temp_half_block, HALF_BLOCK_SIZE);
+
+    inverse_initial_permutation(block);
+}
+
+void decrypt_block(const uint8_t* ciphertext_block, const uint8_t* key, uint8_t* plaintext_block_buffer) {
+    uint8_t* block = plaintext_block_buffer;
+    memcpy(block, ciphertext_block, BLOCK_SIZE);
+
+    uint8_t key_state[BLOCK_SIZE];
+    permute_key(key, key_state);
+    
+    initial_permutation(block);
+
+    uint8_t temp_half_block[HALF_BLOCK_SIZE];
+
+    for (int r = 1; r <= NROUNDS; r++) {
+        uint8_t round_key[BLOCK_SIZE];
+        memcpy(temp_half_block, block + HALF_BLOCK_SIZE, HALF_BLOCK_SIZE);
+
+        get_round_key(key_state, round_key);
+        right_rotate_key_state(key_state, r);
 
         cipher_function(block + HALF_BLOCK_SIZE, round_key);
         

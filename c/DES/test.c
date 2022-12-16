@@ -151,5 +151,20 @@ int main() {
     assert(memcmp(encrypt_result, encrypt_expected_result_2, BLOCK_SIZE) == 0);
 
 
+    // Block Decryption
+    uint8_t decrypt_result[BLOCK_SIZE];
+
+    const uint8_t decrypt_input_1[BLOCK_SIZE] = {0x85, 0xe8, 0x13, 0x54, 0x0f, 0x0a, 0xb4, 0x05};
+    const uint8_t decrypt_key_1[BLOCK_SIZE] = {0x13, 0x34, 0x57, 0x79, 0x9b, 0xbc, 0xdf, 0xf1};
+    const uint8_t decrypt_expected_result_1[BLOCK_SIZE] = {0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef};
+    decrypt_block(decrypt_input_1, decrypt_key_1, decrypt_result);
+    assert(memcmp(decrypt_result, decrypt_expected_result_1, BLOCK_SIZE) == 0);
+
+    const uint8_t decrypt_input_2[BLOCK_SIZE] = {0x76, 0x35, 0x49, 0xd3, 0x8b, 0x57, 0x0c, 0x0e};
+    const uint8_t decrypt_key_2[BLOCK_SIZE] = {0x4b, 0x41, 0x53, 0x48, 0x49, 0x53, 0x41, 0x42};
+    const uint8_t decrypt_expected_result_2[BLOCK_SIZE] = {0x4e, 0x45, 0x56, 0x52, 0x51, 0x55, 0x49, 0x54};
+    decrypt_block(decrypt_input_2, decrypt_key_2, decrypt_result);
+    assert(memcmp(decrypt_result, decrypt_expected_result_2, BLOCK_SIZE) == 0);
+
     return 0;
 }
